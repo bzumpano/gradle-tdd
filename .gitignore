@@ -1,9 +1,6 @@
 # Compiled source
 *.class
 
-# IntelliJ config
-*.iml
-
 # generated files
 bin/
 gen/
