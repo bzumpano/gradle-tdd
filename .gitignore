@@ -1,0 +1,17 @@
+# Compiled source
+*.class
+
+# IntelliJ config
+*.iml
+
+# generated files
+bin/
+gen/
+out/
+build/
+classes/
+
+# IDEA/Android Studio project files, because
+# the project can be imported from settings.gradle
+.idea
+*.iml
