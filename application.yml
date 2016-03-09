@@ -1,0 +1,14 @@
+# @see http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config
+# @see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-yaml
+app:
+    name: gradle-tdd
+    description: Simple Java Web project create to proof that is possible work with TDD/Java with simple way
+
+spring:
+    profiles: development
+
+spring:
+    profiles: test
+
+spring:
+    profiles: production
