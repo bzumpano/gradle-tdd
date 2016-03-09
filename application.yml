@@ -4,11 +4,11 @@ app:
     name: gradle-tdd
     description: Simple Java Web project create to proof that is possible work with TDD/Java with simple way
 
-spring:
-    profiles: development
+# spring:
+#     profiles: development
 
-spring:
-    profiles: test
+# spring:
+#     profiles: test
 
-spring:
-    profiles: production
+# spring:
+#     profiles: production
