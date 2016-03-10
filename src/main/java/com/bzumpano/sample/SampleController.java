@@ -2,7 +2,9 @@ package com.bzumpano.sample;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -14,8 +16,16 @@ public class SampleController {
 
     @RequestMapping("/")
     @ResponseBody
-    String home() {
+    public String home() {
         return "Hello World!";
+    }
+
+    @RequestMapping("/teste")
+    public String home(Model model, @RequestParam(value="name", required=false, defaultValue="World") String name) {
+
+        model.addAttribute("name", name);
+
+        return "exibicao";
     }
 
 }
