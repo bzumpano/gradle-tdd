@@ -11,6 +11,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'pmd'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
@@ -57,4 +58,24 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.11'
+}
+
+pmd {
+    consoleOutput = true
+    ruleSets = [
+                "java-basic",
+                "java-braces",
+                "java-strings",
+                "java-clone",
+                "java-imports",
+                "java-migrating",
+                "java-j2ee",
+//                "java-coupling",
+                "java-junit",
+                "java-optimizations",
+                "java-codesize",
+//                "java-design",
+                "java-sunsecure",
+                "java-unusedcode"
+                ]
 }
