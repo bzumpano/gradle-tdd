@@ -12,11 +12,11 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
 
 
+// TODO Lembrar de configurar "excludeDevtools" para profile=prod
 war {
     baseName = 'gradle-tdd'
     version = '0.0.1-SNAPSHOT'
@@ -33,12 +33,17 @@ configurations {
 }
 
 dependencies {
+
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
 //  compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile("org.springframework.boot:spring-boot-devtools")
+
     runtime('com.h2database:h2')
+
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
