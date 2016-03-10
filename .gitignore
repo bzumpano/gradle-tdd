@@ -13,3 +13,7 @@ classpath/
 .classpath
 .project
 .settings
+
+# Gradle cache
+.gradle
+
