@@ -21,7 +21,7 @@ public class SampleController {
     }
 
     @RequestMapping("/teste")
-    public String home(Model model, @RequestParam(value="name", required=false, defaultValue="World") String name) {
+    public String home(final Model model, @RequestParam(value="name", required=false, defaultValue="World") final String name) {
 
         model.addAttribute("name", name);
 
