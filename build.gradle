@@ -59,7 +59,7 @@ test {
 
 ext {
     // default: development. Override via command line arg:
-    // ./gradlew myTask -Dprofile=production
+    // ./gradlew myTask -Dprofile=[dev|test|demo|prod]
     profile = System.getProperty("profile", "dev")
 }
 

@@ -49,6 +49,14 @@ flyway:
 ---
 
 spring:
+    profiles: demo
+
+server:
+    port: 8081
+
+---
+
+spring:
     profiles: prod
 
 server:
