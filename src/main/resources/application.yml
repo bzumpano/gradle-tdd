@@ -1,6 +1,6 @@
 # @see http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config
 # @see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-yaml
-# for validate Yaml files http://yaml-online-parser.appspot.com/
+# for validate Yaml files @see http://yaml-online-parser.appspot.com/
 
 app:
     name: gradle-tdd
@@ -45,7 +45,7 @@ spring:
     profiles: test
 
 flyway:
-    locations: db/migration
+    locations: db/migration,db/test
 ---
 
 spring:
