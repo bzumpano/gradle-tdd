@@ -1,20 +1,23 @@
 buildscript {
     ext {
         springBootVersion = '1.3.3.RELEASE'
+        flywayVersion = '3.2.1'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "org.flywaydb:flyway-gradle-plugin:${flywayVersion}"
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'pmd'
-apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
+apply plugin: 'org.flywaydb.flyway'
 
 
 // TODO Lembrar de configurar "excludeDevtools=true" para profile=prod
@@ -34,20 +37,14 @@ configurations {
     providedRuntime
 }
 
-bootRun {
-    // SpringBootDevTools
-    addResources = true
-
-    systemProperty "spring.profiles.active", System.getProperty("profile","dev")
-}
-
 dependencies {
 
-//  compile('org.springframework.boot:spring-boot-starter-data-jpa')
 //  compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-devtools")
+    compile('org.flywaydb:flyway-core')
 
     runtime('com.h2database:h2')
 
@@ -56,8 +53,57 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
+ext {
+    // default: development. Override via command line arg:
+    // ./gradlew myTask -Dprofile=[dev|test|demo|prod]
+    profile = System.getProperty("profile", "dev")
+
+
+    // Flyway
+    Properties props = new Properties()
+    props.load(new FileInputStream("${projectDir}/src/main/resources/flyway.properties"))
+
+    def prefix = "flyway.${profile}"
+
+    flywayUrl = props.getProperty("${prefix}.url")
+    flywayUser = props.getProperty("${prefix}.user")
+    flywayPassword = props.getProperty("${prefix}.password")
+    flywaySchemas = props.getProperty("${prefix}.schemas")
+    flywayLocations = props.getProperty("${prefix}.locations")
+}
+
+processResources {
+     filesMatching("**/*.yml") {
+        filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+                profile: profile,
+                flywayLocations: flywayLocations
+        ]
+     }
+
+    // make sure it runs everytime! (never UP-TO-DATE)
+    outputs.upToDateWhen { false }
+}
+
+// this is needed because bootRun runs locally (and resources will not be
+// processed to have application.yml tokens replaced
+tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
+    systemProperty 'spring.profiles.active', profile
+    systemProperty 'flyway.locations', flywayLocations
+}
+
+
+test {
+    systemProperty "spring.profiles.active", "test"
+}
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.11'
+}
+
+bootRun {
+    // SpringBootDevTools
+    addResources = true
 }
 
 pmd {
@@ -79,3 +125,22 @@ pmd {
                 "java-unusedcode"
                 ]
 }
+
+flyway {
+    url = flywayUrl
+    user = flywayUser
+    password = flywayPassword
+    schemas = flywaySchemas
+    locations = Arrays.asList(flywayLocations.split(","))
+}
+
+task flywayLog << {
+    println "    db: ${flyway.user}@${flyway.url} - schema: ${flyway.schemas}"
+}
+
+flywayMigrate.dependsOn(flywayLog)
+flywayInfo.dependsOn(flywayLog)
+flywayRepair.dependsOn(flywayLog)
+flywayClean.dependsOn(flywayLog)
+flywayValidate.dependsOn(flywayLog)
+flywayInit.dependsOn(flywayLog)
