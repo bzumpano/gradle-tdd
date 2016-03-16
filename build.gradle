@@ -98,7 +98,7 @@ pmd {
 flyway {
 
     Properties props = new Properties()
-    props.load(new FileInputStream("${projectDir}/flyway.properties"))
+    props.load(new FileInputStream("${projectDir}/src/main/resources/flyway.properties"))
 
     def prefix = "flyway.${profile}"
 
