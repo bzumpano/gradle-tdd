@@ -53,14 +53,47 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-test {
-    systemProperty "spring.profiles.active", "test"
-}
-
 ext {
     // default: development. Override via command line arg:
     // ./gradlew myTask -Dprofile=[dev|test|demo|prod]
     profile = System.getProperty("profile", "dev")
+
+
+    // Flyway
+    Properties props = new Properties()
+    props.load(new FileInputStream("${projectDir}/src/main/resources/flyway.properties"))
+
+    def prefix = "flyway.${profile}"
+
+    flywayUrl = props.getProperty("${prefix}.url")
+    flywayUser = props.getProperty("${prefix}.user")
+    flywayPassword = props.getProperty("${prefix}.password")
+    flywaySchemas = props.getProperty("${prefix}.schemas")
+    flywayLocations = props.getProperty("${prefix}.locations")
+}
+
+processResources {
+     filesMatching("**/*.yml") {
+        filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+                profile: profile,
+                flywayLocations: flywayLocations
+        ]
+     }
+
+    // make sure it runs everytime! (never UP-TO-DATE)
+    outputs.upToDateWhen { false }
+}
+
+// this is needed because bootRun runs locally (and resources will not be
+// processed to have application.yml tokens replaced
+tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
+    systemProperty 'spring.profiles.active', profile
+    systemProperty 'flyway.locations', flywayLocations
+}
+
+
+test {
+    systemProperty "spring.profiles.active", "test"
 }
 
 
@@ -71,8 +104,6 @@ task wrapper(type: Wrapper) {
 bootRun {
     // SpringBootDevTools
     addResources = true
-
-    systemProperty "spring.profiles.active", profile
 }
 
 pmd {
@@ -96,17 +127,11 @@ pmd {
 }
 
 flyway {
-
-    Properties props = new Properties()
-    props.load(new FileInputStream("${projectDir}/src/main/resources/flyway.properties"))
-
-    def prefix = "flyway.${profile}"
-
-    url = props.getProperty("${prefix}.url")
-    user = props.getProperty("${prefix}.user")
-    password = props.getProperty("${prefix}.password")
-    schemas = props.getProperty("${prefix}.schemas")
-    locations = Arrays.asList(props.getProperty("${prefix}.locations").split(","))
+    url = flywayUrl
+    user = flywayUser
+    password = flywayPassword
+    schemas = flywaySchemas
+    locations = Arrays.asList(flywayLocations.split(","))
 }
 
 task flywayLog << {
