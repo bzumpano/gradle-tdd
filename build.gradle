@@ -25,42 +25,24 @@ apply plugin: 'org.flywaydb.flyway'
 apply plugin: 'com.bertramlabs.asset-pipeline'
 
 
-// TODO Lembrar de configurar "excludeDevtools=true" para profile=prod
-war {
-    baseName = 'gradle-tdd'
-    version = '0.0.1-SNAPSHOT'
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
 
 repositories {
     mavenCentral()
 }
 
+
 configurations {
     providedRuntime
 }
 
-dependencies {
 
-//  compile('org.springframework.boot:spring-boot-starter-security')
-    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-devtools")
-    compile('org.flywaydb:flyway-core')
-
-    // asset-pipeline
-    compile("org.codehaus.groovy:groovy")
-    compile("com.bertramlabs.plugins:asset-pipeline-spring-boot:${assetPipelineVersion}")
-
-    runtime('com.h2database:h2')
-
-    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.11'
 }
+
 
 ext {
     // default: development. Override via command line arg:
@@ -81,6 +63,17 @@ ext {
     flywayLocations = props.getProperty("${prefix}.locations")
 }
 
+
+war {
+    baseName = 'gradle-tdd'
+    version = '0.0.1-SNAPSHOT'
+
+    if (profile != 'dev') {
+        excludeDevtools = true
+    }
+}
+
+
 processResources {
      filesMatching("**/*.yml") {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
@@ -92,6 +85,7 @@ processResources {
     // make sure it runs everytime! (never UP-TO-DATE)
     outputs.upToDateWhen { false }
 }
+
 
 // this is needed because bootRun runs locally (and resources will not be
 // processed to have application.yml tokens replaced
@@ -106,14 +100,11 @@ test {
 }
 
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
-}
-
 bootRun {
     // SpringBootDevTools
     addResources = true
 }
+
 
 pmd {
     consoleOutput = true
@@ -135,6 +126,7 @@ pmd {
                 ]
 }
 
+
 flyway {
     url = flywayUrl
     user = flywayUser
@@ -142,6 +134,7 @@ flyway {
     schemas = flywaySchemas
     locations = Arrays.asList(flywayLocations.split(","))
 }
+
 
 task flywayLog << {
     println "    db: ${flyway.user}@${flyway.url} - schema: ${flyway.schemas}"
@@ -160,4 +153,25 @@ assets {
     enableGzip = false
     enableDigests = false
     enableSourceMaps = false
+}
+
+
+dependencies {
+
+//  compile('org.springframework.boot:spring-boot-starter-security')
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile('org.flywaydb:flyway-core')
+
+    // asset-pipeline
+    compile("org.codehaus.groovy:groovy")
+    compile("com.bertramlabs.plugins:asset-pipeline-spring-boot:${assetPipelineVersion}")
+
+    runtime('com.h2database:h2')
+
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
