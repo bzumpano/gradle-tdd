@@ -21,6 +21,10 @@ spring:
             hibernate:
                 hbm2ddl:
                     auto: validate
+    resources:
+        cachePeriod: 31556926
+#        staticPathPattern: /**
+#        staticLocations: [ "classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/" ]
 
 flyway:
     baseline-on-migrate: true
