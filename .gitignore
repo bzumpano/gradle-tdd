@@ -17,3 +17,9 @@ classpath/
 # Gradle cache
 .gradle
 
+# IntelliJ IDE
+.idea/
+*.iml
+
+#asset-pipeline
+.asscache
