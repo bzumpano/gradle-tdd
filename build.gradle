@@ -67,10 +67,14 @@ ext {
 war {
     baseName = 'gradle-tdd'
     version = '0.0.1-SNAPSHOT'
+}
+
+bootRepackage {
 
     if (profile != 'dev') {
         excludeDevtools = true
     }
+
 }
 
 
