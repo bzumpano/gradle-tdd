@@ -189,17 +189,25 @@ assets {
 
 cargo {
 
+    Properties props = new Properties()
+    props.load(new FileInputStream("${projectDir}/src/main/resources/cargo.properties"))
+
+    def prefix = "cargo.${profile}"
+
+    flywayUrl = props.getProperty("${prefix}.url")
+
+
     containerId = 'tomcat8x'
-    port = 8080
+    port = Integer.valueOf(props.getProperty("${prefix}.port"))
 
     deployable {
         context = project.name
     }
 
     remote {
-        hostname = 'localhost'
-        username = 'admin'
-        password = 'admin'
+        hostname = props.getProperty("${prefix}.hostname")
+        username = props.getProperty("${prefix}.username")
+        password = props.getProperty("${prefix}.password")
     }
 }
 cargoDeployRemote.dependsOn war
