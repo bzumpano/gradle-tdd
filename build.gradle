@@ -4,9 +4,11 @@ buildscript {
         flywayVersion = '3.2.1'
         assetPipelineVersion = '2.7.2'
         fingerprintVersion = '0.3'
+        cargoVersion = '2.2.2'
     }
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+        jcenter()
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -14,6 +16,7 @@ buildscript {
         classpath "org.flywaydb:flyway-gradle-plugin:${flywayVersion}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:${assetPipelineVersion}"
         classpath "com.reuters:gradle-fingerprint-plugin:${fingerprintVersion}"
+        classpath "com.bmuschko:gradle-cargo-plugin:${cargoVersion}"
     }
 }
 
@@ -25,6 +28,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'war'
 apply plugin: 'org.flywaydb.flyway'
 apply plugin: 'com.bertramlabs.asset-pipeline'
+apply plugin: 'com.bmuschko.cargo'
 
 
 sourceCompatibility = 1.8
@@ -167,7 +171,6 @@ flyway {
 task flywayLog << {
     println "    db: ${flyway.user}@${flyway.url} - schema: ${flyway.schemas}"
 }
-
 flywayMigrate.dependsOn(flywayLog)
 flywayInfo.dependsOn(flywayLog)
 flywayRepair.dependsOn(flywayLog)
@@ -182,6 +185,25 @@ assets {
     enableDigests = false
     enableSourceMaps = false
 }
+
+
+cargo {
+
+    containerId = 'tomcat8x'
+    port = 8080
+
+    deployable {
+        context = project.name
+    }
+
+    remote {
+        hostname = 'localhost'
+        username = 'admin'
+        password = 'admin'
+    }
+}
+cargoDeployRemote.dependsOn war
+cargoRedeployRemote.dependsOn war
 
 
 dependencies {
