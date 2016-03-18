@@ -1,5 +1,6 @@
 # @see http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config
 # @see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-yaml
+# @see https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # for validate Yaml files @see http://yaml-online-parser.appspot.com/
 
 app:
@@ -41,8 +42,6 @@ spring:
         console:
             enabled: true
 
-#debug: true
-
 server:
     port: 8080
 
@@ -56,7 +55,7 @@ spring:
     profiles: demo
 
 server:
-    port: 8081
+    port: 8080
 
 ---
 

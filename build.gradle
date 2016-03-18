@@ -96,7 +96,7 @@ bootRepackage {
 
     // SpringBootDevTools
     if (profile == 'dev') {
-        addResources = true
+        bootRun.addResources = true
     } else {
         excludeDevtools = true
     }
