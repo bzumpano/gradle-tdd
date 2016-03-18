@@ -194,9 +194,6 @@ cargo {
 
     def prefix = "cargo.${profile}"
 
-    flywayUrl = props.getProperty("${prefix}.url")
-
-
     containerId = 'tomcat8x'
     port = Integer.valueOf(props.getProperty("${prefix}.port"))
 
