@@ -4,9 +4,11 @@ buildscript {
         flywayVersion = '3.2.1'
         assetPipelineVersion = '2.7.2'
         fingerprintVersion = '0.3'
+        cargoVersion = '2.2.2'
     }
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+        jcenter()
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -14,6 +16,7 @@ buildscript {
         classpath "org.flywaydb:flyway-gradle-plugin:${flywayVersion}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:${assetPipelineVersion}"
         classpath "com.reuters:gradle-fingerprint-plugin:${fingerprintVersion}"
+        classpath "com.bmuschko:gradle-cargo-plugin:${cargoVersion}"
     }
 }
 
@@ -25,6 +28,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'war'
 apply plugin: 'org.flywaydb.flyway'
 apply plugin: 'com.bertramlabs.asset-pipeline'
+apply plugin: 'com.bmuschko.cargo'
 
 
 sourceCompatibility = 1.8
@@ -58,11 +62,11 @@ ext {
 
     def prefix = "flyway.${profile}"
 
-    flywayUrl = props.getProperty("${prefix}.url")
-    flywayUser = props.getProperty("${prefix}.user")
-    flywayPassword = props.getProperty("${prefix}.password")
-    flywaySchemas = props.getProperty("${prefix}.schemas")
-    flywayLocations = props.getProperty("${prefix}.locations")
+    flyway.url = props.getProperty("${prefix}.url")
+    flyway.user = props.getProperty("${prefix}.user")
+    flyway.password = props.getProperty("${prefix}.password")
+    flyway.schemas = props.getProperty("${prefix}.schemas")
+    flyway.locations = Arrays.asList(props.getProperty("${prefix}.locations").split(","))
 }
 
 
@@ -112,7 +116,7 @@ processResources {
      filesMatching("**/*.yml") {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 profile: profile,
-                flywayLocations: flywayLocations
+                flywayLocations: flyway.locations.join(',')
         ]
      }
 
@@ -125,7 +129,7 @@ processResources {
 // processed to have application.yml tokens replaced
 tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
     systemProperty 'spring.profiles.active', profile
-    systemProperty 'flyway.locations', flywayLocations
+    systemProperty 'flyway.locations', flyway.locations.join(',')
 }
 
 
@@ -155,19 +159,9 @@ pmd {
 }
 
 
-flyway {
-    url = flywayUrl
-    user = flywayUser
-    password = flywayPassword
-    schemas = flywaySchemas
-    locations = Arrays.asList(flywayLocations.split(","))
-}
-
-
 task flywayLog << {
     println "    db: ${flyway.user}@${flyway.url} - schema: ${flyway.schemas}"
 }
-
 flywayMigrate.dependsOn(flywayLog)
 flywayInfo.dependsOn(flywayLog)
 flywayRepair.dependsOn(flywayLog)
@@ -182,6 +176,29 @@ assets {
     enableDigests = false
     enableSourceMaps = false
 }
+
+
+cargo {
+
+    Properties props = new Properties()
+    props.load(new FileInputStream("${projectDir}/src/main/resources/cargo.properties"))
+    def prefix = "cargo.${profile}"
+
+    containerId = 'tomcat8x'
+    port = Integer.valueOf(props.getProperty("${prefix}.port"))
+
+    deployable {
+        context = project.name
+    }
+
+    remote {
+        hostname = props.getProperty("${prefix}.hostname")
+        username = props.getProperty("${prefix}.username")
+        password = props.getProperty("${prefix}.password")
+    }
+}
+cargoDeployRemote.dependsOn war
+cargoRedeployRemote.dependsOn war
 
 
 dependencies {
