@@ -133,11 +133,6 @@ tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
 }
 
 
-test {
-    systemProperty "spring.profiles.active", "test"
-}
-
-
 pmd {
     consoleOutput = true
     ruleSets = [
