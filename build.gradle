@@ -70,7 +70,7 @@ task fingerprint(type: com.reuters.gradle.FingerprintTask) {
     description = 'fingerprint front end resources'
     group = 'build'
 
-    source fileTree(dir: "${buildDir}/assets", include: ['**/*'])
+    source fileTree(dir: "${buildDir}/assets", include: ['**/*'], excludes: ["manifest.properties"])
     destinationDir = file("${buildDir}/fingerprint")
 
     // replace references to javascript and css files in html and jsp files
@@ -85,7 +85,12 @@ war {
     baseName = 'gradle-tdd'
     version = '0.0.1-SNAPSHOT'
 
-    exclude("**/assets/**", 'WEB-INF/classes/assets')
+
+    from ("${buildDir}/assets") {
+        includes ["manifest.properties"]
+        into "WEB-INF/classes/assets"
+    }
+
     from ("${buildDir}/fingerprint") {
         into "WEB-INF/classes/assets"
     }
