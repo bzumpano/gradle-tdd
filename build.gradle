@@ -62,11 +62,11 @@ ext {
 
     def prefix = "flyway.${profile}"
 
-    flywayUrl = props.getProperty("${prefix}.url")
-    flywayUser = props.getProperty("${prefix}.user")
-    flywayPassword = props.getProperty("${prefix}.password")
-    flywaySchemas = props.getProperty("${prefix}.schemas")
-    flywayLocations = props.getProperty("${prefix}.locations")
+    flyway.url = props.getProperty("${prefix}.url")
+    flyway.user = props.getProperty("${prefix}.user")
+    flyway.password = props.getProperty("${prefix}.password")
+    flyway.schemas = props.getProperty("${prefix}.schemas")
+    flyway.locations = Arrays.asList(props.getProperty("${prefix}.locations").split(","))
 }
 
 
@@ -116,7 +116,7 @@ processResources {
      filesMatching("**/*.yml") {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 profile: profile,
-                flywayLocations: flywayLocations
+                flywayLocations: flyway.locations.join(',')
         ]
      }
 
@@ -129,7 +129,7 @@ processResources {
 // processed to have application.yml tokens replaced
 tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
     systemProperty 'spring.profiles.active', profile
-    systemProperty 'flyway.locations', flywayLocations
+    systemProperty 'flyway.locations', flyway.locations.join(',')
 }
 
 
@@ -159,15 +159,6 @@ pmd {
 }
 
 
-flyway {
-    url = flywayUrl
-    user = flywayUser
-    password = flywayPassword
-    schemas = flywaySchemas
-    locations = Arrays.asList(flywayLocations.split(","))
-}
-
-
 task flywayLog << {
     println "    db: ${flyway.user}@${flyway.url} - schema: ${flyway.schemas}"
 }
@@ -191,7 +182,6 @@ cargo {
 
     Properties props = new Properties()
     props.load(new FileInputStream("${projectDir}/src/main/resources/cargo.properties"))
-
     def prefix = "cargo.${profile}"
 
     containerId = 'tomcat8x'
