@@ -50,11 +50,29 @@ task wrapper(type: Wrapper) {
 }
 
 
-ext {
-    // default: development. Override via command line arg:
-    // ./gradlew myTask -Dprofile=[dev|test|demo|prod]
-    profile = System.getProperty("profile", "dev")
+// default: development. Override via command line arg:
+// ./gradlew myTask -Dprofile=[dev|test|demo|prod]
+def getProfile() {
 
+    def defaultProfile = 'dev'
+    def activeProfile = System.getProperty("profile")
+    def tasks = project.gradle.startParameter.taskNames
+
+    if (activeProfile == null) {
+
+        activeProfile = tasks.contains('test') || tasks.contains('check') ? 'test' : defaultProfile
+
+    }
+
+    return activeProfile
+}
+
+
+ext {
+
+    profile = getProfile()
+
+    println "Running on profile ${profile}"
 
     // Flyway
     Properties props = new Properties()
