@@ -42,6 +42,13 @@ spring:
         console:
             enabled: true
 
+# @see org.springframework.boot.autoconfigure.security.SecurityProperties.java
+security:
+    user:
+        name: admin
+        password: admin
+        role: ADMIN
+
 server:
     port: 8080
 

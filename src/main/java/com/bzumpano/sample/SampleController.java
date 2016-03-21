@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SampleController {
 
     @RequestMapping("/")
-    @ResponseBody
-    public String home() {
-        return "Hello World!";
+    public String init(final Model model) {
+
+        model.addAttribute("name", "World");
+
+        return "exibicao";
     }
 
     @RequestMapping("/teste")
