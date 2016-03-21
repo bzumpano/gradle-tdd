@@ -153,22 +153,7 @@ tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
 
 pmd {
     consoleOutput = true
-    ruleSets = [
-                "java-basic",
-                "java-braces",
-                "java-strings",
-                "java-clone",
-                "java-imports",
-                "java-migrating",
-                "java-j2ee",
-//                "java-coupling",
-                "java-junit",
-                "java-optimizations",
-                "java-codesize",
-//                "java-design",
-                "java-sunsecure",
-                "java-unusedcode"
-                ]
+    ruleSetFiles= files("src/main/resources/pmd-ruleset.xml")
 }
 
 
@@ -232,4 +217,5 @@ dependencies {
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.security:spring-security-test')
 }

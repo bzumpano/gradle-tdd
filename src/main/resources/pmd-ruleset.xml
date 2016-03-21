@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="Gradle-tdd rulesets"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>Regras PMD basicas</description>
+
+  <rule ref="rulesets/java/basic.xml">
+  </rule>
+  <rule ref="rulesets/java/braces.xml">
+  </rule>
+  <rule ref="rulesets/java/strings.xml">
+  </rule>
+  <rule ref="rulesets/java/clone.xml">
+  </rule>
+  <rule ref="rulesets/java/imports.xml">
+  </rule>
+  <rule ref="rulesets/java/migrating.xml">
+  </rule>
+  <rule ref="rulesets/java/j2ee.xml">
+  </rule>
+  <rule ref="rulesets/java/junit.xml">
+    <exclude name="TestClassWithoutTestCases"/>
+  </rule>
+  <rule ref="rulesets/java/optimizations.xml">
+  </rule>
+  <rule ref="rulesets/java/codesize.xml">
+  </rule>
+  <rule ref="rulesets/java/sunsecure.xml">
+  </rule>
+  <rule ref="rulesets/java/unusedcode.xml">
+  </rule>
+
+</ruleset>
