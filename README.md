@@ -5,6 +5,7 @@ Sample Java Web Project developed under TDD approach to proof that is possible u
 
 
 ## Continuos Delivery
+- [Codacy](https://www.codacy.com/app/zumpano-lp/gradle-tdd/dashboard)
 - [Semaphore CI](http://semaphoreci.com/)
 - [Travis-CI](https://travis-ci.org)
 
