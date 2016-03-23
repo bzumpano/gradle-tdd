@@ -1,4 +1,4 @@
-package com.bzumpano.sample;
+package net.caiena.survey;
 
 import org.springframework.boot.SpringApplication;
 

@@ -1,4 +1,4 @@
-package com.bzumpano.sample;
+package net.caiena.survey;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,6 @@
-package com.bzumpano.sample.controller;
+package net.caiena.survey.controller;
 
-import com.bzumpano.sample.ApplicationTests;
+import net.caiena.survey.ApplicationTests;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

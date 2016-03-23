@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Teste</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+<div th:fragment="content">
+
+    <p>Ops, ocorreu um erro!</p>
+    <p th:text="|Error code: ${status}|"></p>
+    <p th:text="|Error code: ${type}|"></p>
+    <p th:text="|Error code: ${message}|"></p>
+
+</div>
+
+</body>
+</html>

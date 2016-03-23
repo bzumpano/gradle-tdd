@@ -104,7 +104,7 @@ task fingerprint(type: com.reuters.gradle.FingerprintTask) {
 war {
     it.dependsOn fingerprint
 
-    baseName = 'gradle-tdd'
+    baseName = 'survey-caiena'
     version = '0.0.1-SNAPSHOT'
 
 

@@ -3,13 +3,9 @@
 # @see https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # for validate Yaml files @see http://yaml-online-parser.appspot.com/
 
-app:
-    name: gradle-tdd
-    description: Simple Java Web project create to proof that is possible work with TDD/Java with simple way
-
 spring:
     application:
-        name: gradle-tdd
+        name: survey-caiena
     profiles:
         active: "@profile@"
     jpa:
@@ -31,9 +27,6 @@ flyway:
     baseline-on-migrate: true
     locations: "@flywayLocations@"
 
-server:
-    port: 0
-
 ---
 
 spring:
@@ -42,8 +35,11 @@ spring:
         console:
             enabled: true
 
-server:
-    port: 8080
+security:
+    user:
+        name: admin
+        password: admin
+        role: ADMIN
 
 ---
 
@@ -56,18 +52,16 @@ security:
         name: admin
         password: admin
         role: ADMIN
+
+server:
+    port: 0
+
 ---
 
 spring:
     profiles: demo
 
-server:
-    port: 8080
-
 ---
 
 spring:
     profiles: prod
-
-server:
-    port: 8081
