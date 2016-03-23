@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Created by bzumpano on 3/23/16.
+ * @author bzumpano
+ * @since 3/23/16
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
@@ -13,7 +14,7 @@ public class ResourceNotFoundException extends RuntimeException {
         super();
     }
 
-    public ResourceNotFoundException(String message) {
+    public ResourceNotFoundException(final String message) {
         super(message);
     }
 }

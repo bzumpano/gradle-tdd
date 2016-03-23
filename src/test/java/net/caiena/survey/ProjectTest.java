@@ -10,6 +10,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * @author bzumpano
+ * @since 3/23/16
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationTests.class)
 @WebAppConfiguration

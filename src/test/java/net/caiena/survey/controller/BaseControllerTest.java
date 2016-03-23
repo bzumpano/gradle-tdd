@@ -20,7 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 /**
- * Created by bzumpano on 3/21/16.
+ * @author bzumpano
+ * @since 3/23/16
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(ApplicationTests.class)

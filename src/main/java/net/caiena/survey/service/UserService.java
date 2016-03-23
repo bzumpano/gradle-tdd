@@ -4,7 +4,8 @@ import net.caiena.survey.entity.User;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by bzumpano on 3/23/16.
+ * @author bzumpano
+ * @since 3/23/16
  */
 @Service
 public class UserService extends AbstractService<User, Long> {

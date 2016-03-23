@@ -7,7 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by bzumpano on 3/23/16.
+ * @author bzumpano
+ * @since 3/23/16
  */
 public abstract class AbstractService<T, ID extends Serializable> {
 
@@ -19,11 +20,15 @@ public abstract class AbstractService<T, ID extends Serializable> {
         return (List<T>) repository.findAll();
     }
 
-    public T save(T entity) {
+    public T save(final T entity) {
         return repository.save(entity);
     }
 
-    public T find(ID id) {
+    public T find(final ID id) {
         return repository.findOne(id);
+    }
+
+    public void delete(final ID id) {
+        repository.delete(id);
     }
 }

@@ -10,6 +10,7 @@
   <rule ref="rulesets/java/braces.xml">
   </rule>
   <rule ref="rulesets/java/strings.xml">
+    <exclude name="AvoidDuplicateLiterals"/>
   </rule>
   <rule ref="rulesets/java/clone.xml">
   </rule>
@@ -21,6 +22,7 @@
   </rule>
   <rule ref="rulesets/java/junit.xml">
     <exclude name="TestClassWithoutTestCases"/>
+    <exclude name="JUnitAssertionsShouldIncludeMessage"/>
   </rule>
   <rule ref="rulesets/java/optimizations.xml">
   </rule>

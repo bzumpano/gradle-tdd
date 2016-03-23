@@ -32,7 +32,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 
 /**
  * @author bzumpano
- * @since 3/22/16.
+ * @since 3/23/16
  *
  * Se apontar {@link SpringApplicationConfiguration} para o {@link ApplicationTests} irá fazer scan completo no projeto,
  * ao invés disso devemos configurar somente o necessário. Isso reduz o tempo de carregamento do Spring Boot.
