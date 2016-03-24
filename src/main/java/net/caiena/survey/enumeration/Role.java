@@ -11,8 +11,10 @@ public enum Role implements GrantedAuthority {
     ADMIN,
     USER;
 
+    private final String ROLE_PREFIX = "ROLE_";
+
     @Override
     public String getAuthority() {
-        return this.name();
+        return ROLE_PREFIX + this.name().toUpperCase();
     }
 }

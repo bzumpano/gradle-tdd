@@ -27,8 +27,11 @@ public class MultiHttpSecurityConfig {
                     .anyRequest()
                         .hasRole("ADMIN")
                         .and()
-                    .httpBasic();
+                    .httpBasic()
+                        .and()
+                    .csrf().disable();
         }
+
     }
 
     @Configuration

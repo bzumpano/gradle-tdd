@@ -1,8 +1,8 @@
 package net.caiena.survey.controller;
 
-import net.caiena.survey.entity.User;
+import net.caiena.survey.entity.Survey;
 import net.caiena.survey.exception.ResourceNotFoundException;
-import net.caiena.survey.service.UserService;
+import net.caiena.survey.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,83 +14,83 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author bzumpano
- * @since 3/23/16
+ * @since 3/24/16
  */
 @Controller
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/surveys")
+public class SurveyController {
 
     @Autowired
-    private UserService userService;
+    private SurveyService surveyService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String index(final Model model) {
 
-        model.addAttribute("users", userService.list());
+        model.addAttribute("surveys", surveyService.list());
 
-        return "users/index";
+        return "surveys/index";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public String show(final Model model, @PathVariable("id") final Long id) {
 
-        final User user = userService.find(id);
+        final Survey survey = surveyService.find(id);
 
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found.");
+        if (survey == null) {
+            throw new ResourceNotFoundException("Survey not found.");
         }
 
-        model.addAttribute("user", user);
+        model.addAttribute("survey", survey);
 
-        return "users/show";
+        return "surveys/show";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/new")
     public String _new(final Model model) {
-        return "users/new";
+        return "surveys/new";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String create(final Model model, @ModelAttribute("user") final User user,
-                        final BindingResult result) {
+    public String create(final Model model, @ModelAttribute("survey") final Survey survey,
+                         final BindingResult result) {
 
-        userService.save(user);
+        surveyService.save(survey);
 
-        model.addAttribute("user", user);
+        model.addAttribute("survey", survey);
 
-        return "users/show";
+        return "surveys/show";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/edit")
     public String edit(final Model model, @PathVariable("id") final Long id) {
 
-        final User user = userService.find(id);
+        final Survey survey = surveyService.find(id);
 
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found.");
+        if (survey == null) {
+            throw new ResourceNotFoundException("Survey not found.");
         }
 
-        model.addAttribute("user", user);
+        model.addAttribute("survey", survey);
 
-        return "users/edit";
+        return "surveys/edit";
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-    public String update(final Model model, @ModelAttribute("user") final User user,
+    public String update(final Model model, @ModelAttribute("survey") final Survey survey,
                          final BindingResult result) {
 
-        userService.save(user);
+        surveyService.save(survey);
 
-        model.addAttribute("user", user);
+        model.addAttribute("survey", survey);
 
-        return "users/show";
+        return "surveys/show";
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public String destroy(@PathVariable("id") final Long id) {
 
-        userService.delete(id);
+        surveyService.delete(id);
 
-        return "redirect:/users";
+        return "redirect:/surveys";
     }
 }

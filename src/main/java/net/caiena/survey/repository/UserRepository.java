@@ -1,4 +1,4 @@
-package net.caiena.survey;
+package net.caiena.survey.repository;
 
 import net.caiena.survey.entity.User;
 import org.springframework.data.repository.CrudRepository;
@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
+
+    User findByUsername(String username);
+
 }

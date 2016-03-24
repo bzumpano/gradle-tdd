@@ -10,10 +10,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers;
+import org.springframework.stereotype.Controller;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -23,8 +25,12 @@ import org.springframework.test.context.web.ServletTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -65,11 +71,19 @@ public class MultiHttpSecurityConfigTest {
     }
 
     @Test
-    public void authenticationFailedFormLogin() throws Exception {
+    public void authenticationFailedFormLoginBadCredentials() throws Exception {
         mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user("notfound").password("invalid"))
                 .andExpect(MockMvcResultMatchers.status().isFound())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/login?error"))
                 .andExpect(SecurityMockMvcResultMatchers.unauthenticated());
+    }
+
+    @Test
+    @WithMockUser("admin")
+    public void authenticationFailedFormLoginBadCsrf() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/").with(SecurityMockMvcRequestPostProcessors.csrf().useInvalidToken()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -104,6 +118,16 @@ public class MultiHttpSecurityConfigTest {
             auth
                     .inMemoryAuthentication()
                     .withUser(USER_NAME).roles("ADMIN").password(USER_PWD);
+        }
+    }
+
+    @Controller
+    static class TestCsrfController {
+
+        @RequestMapping(value = "/", method = RequestMethod.POST)
+        @ResponseBody
+        public String index() {
+            return "test";
         }
     }
 }
