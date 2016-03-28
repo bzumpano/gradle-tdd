@@ -7,5 +7,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 3/23/16
  */
 @SpringBootApplication(scanBasePackages = {"net.caiena.survey"})
-public class ApplicationTests extends ApplicationBase {
+public class ApplicationTests extends AbstractApplication {
 }

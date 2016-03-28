@@ -21,15 +21,15 @@ public class MultiHttpSecurityConfig {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-            http
-                    .antMatcher("/api/**")
-                        .authorizeRequests()
-                    .anyRequest()
-                        .hasRole("ADMIN")
-                        .and()
-                    .httpBasic()
-                        .and()
-                    .csrf().disable();
+            http.
+                    antMatcher("/api/**").
+                        authorizeRequests().
+                    anyRequest().
+                        hasRole("ADMIN").
+                        and().
+                    httpBasic().
+                        and().
+                    csrf().disable();
         }
 
     }
@@ -39,11 +39,11 @@ public class MultiHttpSecurityConfig {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-            http
-                    .authorizeRequests()
-                        .anyRequest().authenticated()
-                        .and()
-                    .formLogin();
+            http.
+                    authorizeRequests().
+                        anyRequest().authenticated().
+                        and().
+                    formLogin();
         }
     }
 
