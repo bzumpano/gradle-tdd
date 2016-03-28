@@ -10,10 +10,10 @@ import java.util.List;
  * @author bzumpano
  * @since 3/23/16
  */
-public abstract class AbstractService<T, ID extends Serializable> {
+public abstract class AbstractService<T, K extends Serializable> {
 
     @Autowired
-    private CrudRepository<T, ID> repository;
+    private CrudRepository<T, K> repository;
 
 
     public List<T> list() {
@@ -24,11 +24,11 @@ public abstract class AbstractService<T, ID extends Serializable> {
         return repository.save(entity);
     }
 
-    public T find(final ID id) {
+    public T find(final K id) {
         return repository.findOne(id);
     }
 
-    public void delete(final ID id) {
+    public void delete(final K id) {
         repository.delete(id);
     }
 }

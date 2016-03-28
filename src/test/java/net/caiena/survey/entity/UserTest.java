@@ -26,8 +26,8 @@ public class UserTest {
 
     @BeforeClass
     public static void init() {
-        final ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
-        validator = vf.getValidator();
+        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
