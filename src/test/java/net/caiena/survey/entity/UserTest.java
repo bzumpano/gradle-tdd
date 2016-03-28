@@ -41,8 +41,7 @@ public class UserTest {
 
     @Test
     public void assertNotNullUsername() {
-        final User user = new UserBuilder()
-                .username(null).build();
+        final User user = new UserBuilder().username(null).build();
 
         final Set<ConstraintViolation<User>> violations = validator.validate(user);
 

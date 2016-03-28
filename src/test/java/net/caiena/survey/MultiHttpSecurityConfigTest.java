@@ -65,47 +65,47 @@ public class MultiHttpSecurityConfigTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).
+                apply(springSecurity()).
+                build();
     }
 
     @Test
     public void authenticationFailedFormLoginBadCredentials() throws Exception {
-        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user("notfound").password("invalid"))
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/login?error"))
-                .andExpect(SecurityMockMvcResultMatchers.unauthenticated());
+        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user("notfound").password("invalid")).
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrl("/login?error")).
+                andExpect(SecurityMockMvcResultMatchers.unauthenticated());
     }
 
     @Test
     @WithMockUser("admin")
     public void authenticationFailedFormLoginBadCsrf() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/").with(SecurityMockMvcRequestPostProcessors.csrf().useInvalidToken()))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+        mockMvc.perform(MockMvcRequestBuilders.post("/").with(SecurityMockMvcRequestPostProcessors.csrf().useInvalidToken())).
+                andDo(MockMvcResultHandlers.print()).
+                andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
     public void authenticationSuccessFormLogin() throws Exception {
-        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user(USER_NAME).password(USER_PWD))
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/"))
-                .andExpect(SecurityMockMvcResultMatchers.authenticated().withUsername(USER_NAME));
+        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user(USER_NAME).password(USER_PWD)).
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrl("/")).
+                andExpect(SecurityMockMvcResultMatchers.authenticated().withUsername(USER_NAME));
     }
 
     @Test
     public void authenticationFailureHttpBasic() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/notfound")
-                .with(SecurityMockMvcRequestPostProcessors.httpBasic("notfound", "invalid")))
-                .andExpect(SecurityMockMvcResultMatchers.unauthenticated());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/notfound").
+                with(SecurityMockMvcRequestPostProcessors.httpBasic("notfound", "invalid"))).
+                andExpect(SecurityMockMvcResultMatchers.unauthenticated());
     }
 
     @Test
     public void authenticationSuccessHttpBasic() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/notfound")
-                .with(SecurityMockMvcRequestPostProcessors.httpBasic(USER_NAME, USER_PWD)))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/notfound").
+                with(SecurityMockMvcRequestPostProcessors.httpBasic(USER_NAME, USER_PWD))).
+                andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @EnableWebSecurity
@@ -115,9 +115,9 @@ public class MultiHttpSecurityConfigTest {
 
         @Autowired
         public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .inMemoryAuthentication()
-                    .withUser(USER_NAME).roles("ADMIN").password(USER_PWD);
+            auth.
+                    inMemoryAuthentication().
+                    withUser(USER_NAME).roles("ADMIN").password(USER_PWD);
         }
     }
 

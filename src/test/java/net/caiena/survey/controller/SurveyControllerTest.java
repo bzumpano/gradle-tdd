@@ -5,6 +5,7 @@ import net.caiena.survey.entity.Survey;
 import net.caiena.survey.exception.ResourceNotFoundException;
 import net.caiena.survey.service.SurveyService;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -26,10 +28,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 /**
  * @author bzumpano
@@ -58,9 +56,9 @@ public class SurveyControllerTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).
+                apply(SecurityMockMvcConfigurers.springSecurity()).
+                build();
     }
 
     @Before
@@ -73,10 +71,10 @@ public class SurveyControllerTest {
 
     @Test
     public void successList() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/surveys"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("surveys/index"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("surveys"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/surveys")).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("surveys/index")).
+                andExpect(MockMvcResultMatchers.model().attributeExists("surveys"));
     }
 
     @Test
@@ -84,11 +82,11 @@ public class SurveyControllerTest {
 
         surveyService.save(survey);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}", survey.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("surveys/show"))
-                .andExpect(MockMvcResultMatchers.model()
-                        .attribute("survey", Matchers.hasProperty("id", Matchers.is(survey.getId()))));
+        mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}", survey.getId())).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("surveys/show")).
+                andExpect(MockMvcResultMatchers.model().
+                        attribute("survey", Matchers.hasProperty("id", Matchers.is(survey.getId()))));
     }
 
     @Test
@@ -96,39 +94,39 @@ public class SurveyControllerTest {
 
         final Long nonExistingUserId = Long.MAX_VALUE;
 
-        final MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}", nonExistingUserId))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andReturn();
+        final MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}", nonExistingUserId)).
+                andExpect(MockMvcResultMatchers.status().isNotFound()).
+                andReturn();
 
-        assertEquals(result.getResolvedException().getClass(), ResourceNotFoundException.class);
+        Assert.assertEquals(result.getResolvedException().getClass(), ResourceNotFoundException.class);
     }
 
     @Test
     public void successNew() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/surveys/new"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("surveys/new"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/surveys/new")).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("surveys/new"));
 
     }
 
     @Test
     public void successCreate() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/surveys")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .param("description", "Test survey"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("surveys/show"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("survey"));
+        mockMvc.perform(MockMvcRequestBuilders.post("/surveys").
+                with(SecurityMockMvcRequestPostProcessors.csrf()).
+                param("description", "Test survey")).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("surveys/show")).
+                andExpect(MockMvcResultMatchers.model().attributeExists("survey"));
     }
 
     @Test
     public void successEdit() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}/edit", survey.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("surveys/edit"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}/edit", survey.getId())).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("surveys/edit"));
 
     }
 
@@ -138,12 +136,12 @@ public class SurveyControllerTest {
         final String oldDescription = survey.getDescription();
         survey.setDescription("New description");
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/surveys/{id}", survey.getId())
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
-                .param("description", survey.getDescription()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("surveys/show"))
-                .andExpect(MockMvcResultMatchers.model().attribute("survey",
+        mockMvc.perform(MockMvcRequestBuilders.put("/surveys/{id}", survey.getId()).
+                with(SecurityMockMvcRequestPostProcessors.csrf()).
+                param("description", survey.getDescription())).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("surveys/show")).
+                andExpect(MockMvcResultMatchers.model().attribute("survey",
                         Matchers.hasProperty("description", Matchers.not(oldDescription))));
 
     }
@@ -151,12 +149,12 @@ public class SurveyControllerTest {
     @Test
     public void successDestroy() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/surveys/{id}", survey.getId())
-                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.status().isFound())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/surveys"));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/surveys/{id}", survey.getId()).
+                with(SecurityMockMvcRequestPostProcessors.csrf())).
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrl("/surveys"));
 
-        assertNull(surveyService.find(survey.getId()));
+        Assert.assertNull(surveyService.find(survey.getId()));
 
     }
 

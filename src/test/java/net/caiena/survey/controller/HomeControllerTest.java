@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -20,8 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 /**
  * @author bzumpano
@@ -44,17 +43,17 @@ public class HomeControllerTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).
+                apply(SecurityMockMvcConfigurers.springSecurity()).
+                build();
     }
 
     @Test
     @WithMockUser("admin")
     public void successHome() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("index"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/")).
+                andExpect(MockMvcResultMatchers.status().isOk()).
+                andExpect(MockMvcResultMatchers.view().name("index"));
     }
 
 }
