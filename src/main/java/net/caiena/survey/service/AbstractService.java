@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class AbstractService<T, ID extends Serializable> {
 
     @Autowired
-    CrudRepository<T, ID> repository;
+    private CrudRepository<T, ID> repository;
 
 
     public List<T> list() {

@@ -46,7 +46,7 @@ public class SurveyController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/new")
-    public String _new(final Model model) {
+    public String fresh(final Model model) {
         return "surveys/new";
     }
 
