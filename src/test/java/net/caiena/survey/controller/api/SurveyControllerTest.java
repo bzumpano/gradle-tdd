@@ -2,7 +2,7 @@ package net.caiena.survey.controller.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.caiena.survey.controller.BaseControllerTest;
+import net.caiena.survey.ApplicationTests;
 import net.caiena.survey.entity.Survey;
 import net.caiena.survey.entity.User;
 import net.caiena.survey.enumeration.Role;
@@ -11,12 +11,26 @@ import net.caiena.survey.service.UserService;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.test.context.web.ServletTestExecutionListener;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -24,7 +38,20 @@ import java.util.List;
  * @author bzumpano
  * @since 3/24/16
  */
-public class SurveyControllerTest extends BaseControllerTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(ApplicationTests.class)
+@WebAppConfiguration
+@TestExecutionListeners(listeners={ServletTestExecutionListener.class,
+        DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class})
+public class SurveyControllerTest {
+
+    @Autowired
+    private WebApplicationContext context;
+
+    protected MockMvc mockMvc;
 
     @Autowired
     private UserService userService;
@@ -37,20 +64,13 @@ public class SurveyControllerTest extends BaseControllerTest {
     private Survey survey;
 
     @Before
-    public void createUser() {
-        user = new User();
-        user.setUsername("user");
-        user.setPassword("password");
-        user.setRole(Role.ADMIN);
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).
+                apply(SecurityMockMvcConfigurers.springSecurity()).
+                build();
 
-        userService.save(user);
-    }
-
-    @Before
-    public void createSurvey() {
-        survey = new Survey();
-        survey.setDescription("Test survey");
-        surveyService.save(survey);
+        createUser();
+        createSurvey();
     }
 
     @Test
@@ -105,6 +125,21 @@ public class SurveyControllerTest extends BaseControllerTest {
         final ObjectMapper mapper = new ObjectMapper();
 
         return mapper.writeValueAsString(survey);
+    }
+
+    private void createUser() {
+        user = new User();
+        user.setUsername("user");
+        user.setPassword("password");
+        user.setRole(Role.ADMIN);
+
+        userService.save(user);
+    }
+
+    private void createSurvey() {
+        survey = new Survey();
+        survey.setDescription("Test survey");
+        surveyService.save(survey);
     }
 
 }

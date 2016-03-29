@@ -45,14 +45,14 @@ import org.springframework.web.context.WebApplicationContext;
 public class SurveyControllerTest {
 
     @Autowired
-    private SurveyService surveyService;
-
-    private Survey survey;
-
-    @Autowired
     private WebApplicationContext context;
 
     protected MockMvc mockMvc;
+
+    @Autowired
+    private SurveyService surveyService;
+
+    private Survey survey;
 
     @Before
     public void setUp() {

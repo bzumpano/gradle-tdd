@@ -11,7 +11,8 @@ import javax.persistence.*;
 public class Survey {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SURVEYS")
+    @SequenceGenerator(name = "SEQ_SURVEYS", sequenceName = "SEQ_SURVEYS", allocationSize = 1)
     private Long id;
 
     @Column

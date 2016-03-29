@@ -83,6 +83,7 @@ ext {
     flyway.url = props.getProperty("${prefix}.url")
     flyway.user = props.getProperty("${prefix}.user")
     flyway.password = props.getProperty("${prefix}.password")
+    flyway.driver = props.getProperty("${prefix}.driver")
     flyway.schemas = props.getProperty("${prefix}.schemas")
     flyway.locations = Arrays.asList(props.getProperty("${prefix}.locations").split(","))
 }
@@ -134,6 +135,10 @@ processResources {
      filesMatching("**/*.yml") {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
                 profile: profile,
+                flywayUrl: flyway.url,
+                flywayUser: flyway.user,
+                flywayPassword: flyway.password,
+                flywayDriver: flyway.driver,
                 flywayLocations: flyway.locations.join(',')
         ]
      }
@@ -148,6 +153,11 @@ processResources {
 tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
     systemProperty 'spring.profiles.active', profile
     systemProperty 'flyway.locations', flyway.locations.join(',')
+
+    systemProperty 'spring.datasource.url', flyway.url
+    systemProperty 'spring.datasource.username', flyway.user
+    systemProperty 'spring.datasource.password', flyway.password
+    systemProperty 'spring.datasource.driverClassName', flyway.driver
 }
 
 
@@ -212,8 +222,8 @@ dependencies {
     compile("org.codehaus.groovy:groovy")
     compile("com.bertramlabs.plugins:asset-pipeline-spring-boot:${assetPipelineVersion}")
 
-
-    runtime('com.h2database:h2')
+    runtime('org.postgresql:postgresql')
+    testRuntime('com.h2database:h2')
 
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 

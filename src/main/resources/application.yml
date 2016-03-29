@@ -8,6 +8,12 @@ spring:
         name: survey-caiena
     profiles:
         active: "@profile@"
+    datasource:
+        driverClassName: "@flywayDriver@"
+        url: "@flywayUrl@"
+        username: "@flywayUser@"
+        password: "@flywayPassword@"
+
     jpa:
         generate-ddl: false
         hibernate:
@@ -31,9 +37,9 @@ flyway:
 
 spring:
     profiles: dev
-    h2:
-        console:
-            enabled: true
+#    h2:
+#        console:
+#            enabled: true
 
 security:
     user:
