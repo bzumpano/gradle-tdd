@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
     xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
 <head>
-<title>Layout</title>
+    <title>Layout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="text/javascript" th:src="@{/assets/application.js}"></script>
     <link rel="stylesheet" th:href="@{/assets/application.css}" />
 </head>
 <body>
-    <h1 layout:fragment="header">Header</h1>
-    <div layout:fragment="content" class="content">Content</div>
+    <div class="container">
+        <h1 layout:fragment="header">Header</h1>
+        <div layout:fragment="content">Content</div>
+    </div>
 </body>
 </html>

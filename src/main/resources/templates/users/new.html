@@ -1,14 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="Layout">
 <head>
     <title>Teste</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 
-<div th:fragment="content">
+<div layout:fragment="content">
 
-    <p th:text="'Hello, user!'" />
+    <h2>Add new User</h2>
+
+    <form action="#" th:action="@{/users}" th:object="${user}" method="post">
+
+        <th:block layout:include="users/_form :: form"/>
+
+        <button type="submit" class="btn btn-default">Create User</button>
+    </form>
 
 </div>
 

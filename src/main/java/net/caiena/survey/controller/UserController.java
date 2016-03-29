@@ -1,6 +1,7 @@
 package net.caiena.survey.controller;
 
 import net.caiena.survey.entity.User;
+import net.caiena.survey.enumeration.Role;
 import net.caiena.survey.exception.ResourceNotFoundException;
 import net.caiena.survey.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @ModelAttribute("roles")
+    public Role[] roles() {
+        return Role.values();
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String index(final Model model) {
@@ -47,6 +53,9 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/new")
     public String fresh(final Model model) {
+
+        model.addAttribute("user", new User());
+
         return "users/new";
     }
 
@@ -76,14 +85,15 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-    public String update(final Model model, @ModelAttribute("user") final User user,
+    public String update(final Model model, @PathVariable("id") final Long id,
+                         @ModelAttribute("user") final User user,
                          final BindingResult result) {
 
         userService.save(user);
 
         model.addAttribute("user", user);
 
-        return "users/show";
+        return "users/" + id;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
