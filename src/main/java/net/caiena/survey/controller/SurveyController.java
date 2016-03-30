@@ -47,6 +47,9 @@ public class SurveyController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/new")
     public String fresh(final Model model) {
+
+        model.addAttribute("survey", new Survey());
+
         return "surveys/new";
     }
 
@@ -58,7 +61,7 @@ public class SurveyController {
 
         model.addAttribute("survey", survey);
 
-        return "surveys/show";
+        return "redirect:surveys/" + survey.getId();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/edit")
@@ -76,14 +79,15 @@ public class SurveyController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
-    public String update(final Model model, @ModelAttribute("survey") final Survey survey,
+    public String update(final Model model, @PathVariable("id") final Long id,
+                         @ModelAttribute("survey") final Survey survey,
                          final BindingResult result) {
 
         surveyService.save(survey);
 
         model.addAttribute("survey", survey);
 
-        return "surveys/show";
+        return "redirect:surveys/" + id;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")

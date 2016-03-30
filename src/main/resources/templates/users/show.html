@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="Layout">
 <head>
     <title>Teste</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 
-<div th:fragment="content">
+<th:block layout:fragment="content">
 
-    <p th:text="'Hello, user!'" />
-
-</div>
-
+                <div class="well">
+                    <h2><u th:text="${user.username}"></u></h2>
+                    <p><strong>ID: </strong><span th:text="${user.id}"></span></p>
+                    <p><strong>Password: </strong><span th:text="${user.password}"></span></p>
+                    <p><strong>Role: </strong><span th:text="${user.role}"></span></p>
+                </div>
+</th:block>
 </body>
 </html>

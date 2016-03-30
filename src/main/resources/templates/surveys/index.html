@@ -1,16 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="Layout">
 <head>
     <title>Teste</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 
-<div th:fragment="content">
+<th:block layout:fragment="content">
 
-    <p th:text="'Hello, user!'" />
+    <table class="table table-striped">
+        <caption>List of Surveys</caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="survey : ${surveys}">
+            <td th:text="${survey.id}"></td>
+            <td th:text="${survey.description}"></td>
+        </tr>
+        </tbody>
+    </table>
 
-</div>
+</th:block>
 
 </body>
 </html>

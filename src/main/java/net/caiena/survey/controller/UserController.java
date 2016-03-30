@@ -67,7 +67,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "users/show";
+        return "users/" + user.getId();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/edit")
