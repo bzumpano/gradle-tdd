@@ -91,7 +91,7 @@ public class SurveyController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public String destroy(@PathVariable("id") final Long id) {
+    public String destroy(final Model model, @PathVariable("id") final Long id) {
 
         surveyService.delete(id);
 

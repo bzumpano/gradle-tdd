@@ -117,13 +117,12 @@ public class UserControllerTest {
     public void successCreate() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users").
-                    with(SecurityMockMvcRequestPostProcessors.csrf()).
-                    param("username", "user").
-                    param("password", "password").
-                    param("role", Role.USER.name())).
-                andExpect(MockMvcResultMatchers.status().isOk()).
-                andExpect(MockMvcResultMatchers.view().name("users/show")).
-                andExpect(MockMvcResultMatchers.model().attributeExists(ATTR_USER));
+                        with(SecurityMockMvcRequestPostProcessors.csrf()).
+                        param("username", "user").
+                        param("password", "password").
+                        param("role", Role.USER.name())).
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrlPattern("users/*"));
     }
 
     @Test
@@ -140,22 +139,20 @@ public class UserControllerTest {
     @Test
     public void successUpdate() throws Exception {
 
-        final String oldPassword = user.getPassword();
+        final String newPassword = "newPassword";
+
         userService.save(user);
-
-        user.setPassword("newPassword");
-
 
         mockMvc.perform(MockMvcRequestBuilders.put("/users/{id}", user.getId()).
                         with(SecurityMockMvcRequestPostProcessors.csrf()).
                 param("username", user.getUsername()).
-                param("password", user.getPassword()).
+                param("password", newPassword).
                 param("role", user.getRole().name())).
-                andExpect(MockMvcResultMatchers.status().isOk()).
-                andExpect(MockMvcResultMatchers.view().name("users/show")).
-                andExpect(MockMvcResultMatchers.model().attribute(ATTR_USER,
-                        Matchers.hasProperty("password", Matchers.not(oldPassword))));
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrlPattern("users/*"));
 
+        user = userService.find(user.getId());
+        Assert.assertEquals(newPassword, user.getPassword());
     }
 
     @Test

@@ -24,11 +24,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @ModelAttribute("roles")
-    public Role[] roles() {
-        return Role.values();
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     public String index(final Model model) {
 
@@ -54,6 +49,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/new")
     public String fresh(final Model model) {
 
+        model.addAttribute("roles", Role.values());
         model.addAttribute("user", new User());
 
         return "users/new";
@@ -67,7 +63,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "users/" + user.getId();
+        return "redirect:users/" + user.getId();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/edit")
@@ -79,6 +75,7 @@ public class UserController {
             throw new ResourceNotFoundException("User not found.");
         }
 
+        model.addAttribute("roles", Role.values());
         model.addAttribute("user", user);
 
         return "users/edit";
@@ -93,7 +90,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "users/" + id;
+        return "redirect:users/" + id;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")

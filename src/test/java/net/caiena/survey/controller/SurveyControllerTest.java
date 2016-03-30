@@ -65,7 +65,6 @@ public class SurveyControllerTest {
     public void createSurvey() {
         survey = new Survey();
         survey.setDescription("Test survey");
-        surveyService.save(survey);
     }
 
 
@@ -116,13 +115,14 @@ public class SurveyControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/surveys").
                 with(SecurityMockMvcRequestPostProcessors.csrf()).
                 param("description", "Test survey")).
-                andExpect(MockMvcResultMatchers.status().isOk()).
-                andExpect(MockMvcResultMatchers.view().name("surveys/show")).
-                andExpect(MockMvcResultMatchers.model().attributeExists("survey"));
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrlPattern("surveys/*"));
     }
 
     @Test
     public void successEdit() throws Exception {
+
+        surveyService.save(survey);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/surveys/{id}/edit", survey.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk()).
@@ -133,21 +133,24 @@ public class SurveyControllerTest {
     @Test
     public void successUpdate() throws Exception {
 
-        final String oldDescription = survey.getDescription();
-        survey.setDescription("New description");
+        final String newDescription = "New description";
+
+        surveyService.save(survey);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/surveys/{id}", survey.getId()).
                 with(SecurityMockMvcRequestPostProcessors.csrf()).
-                param("description", survey.getDescription())).
-                andExpect(MockMvcResultMatchers.status().isOk()).
-                andExpect(MockMvcResultMatchers.view().name("surveys/show")).
-                andExpect(MockMvcResultMatchers.model().attribute("survey",
-                        Matchers.hasProperty("description", Matchers.not(oldDescription))));
+                param("description", newDescription)).
+                andExpect(MockMvcResultMatchers.status().isFound()).
+                andExpect(MockMvcResultMatchers.redirectedUrlPattern("surveys/*"));
 
+        survey = surveyService.find(survey.getId());
+        Assert.assertEquals(newDescription, survey.getDescription());
     }
 
     @Test
     public void successDestroy() throws Exception {
+
+        surveyService.save(survey);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/surveys/{id}", survey.getId()).
                 with(SecurityMockMvcRequestPostProcessors.csrf())).
