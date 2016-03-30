@@ -4,4 +4,4 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew check -Dprofile=test
+  - ./gradlew check --stacktrace
