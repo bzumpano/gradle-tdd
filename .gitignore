@@ -23,3 +23,8 @@ classpath/
 
 #asset-pipeline
 .asscache
+
+
+# Sensible config files
+**/cargo.properties
+**/flyway.properties
