@@ -1,0 +1,31 @@
+# DEVELOPMENT
+# ----
+cargo.dev.hostname=localhost
+cargo.dev.port=8080
+cargo.dev.username=<DEV_USERNAME>
+cargo.dev.password=<DEV_PASSWORD>
+
+
+# TEST
+# ----
+cargo.test.hostname=<TEST_HOST>
+cargo.test.port=<TEST_PORT>
+cargo.test.username=<TEST_USERNAME>
+cargo.test.password=<TEST_PASSWORD>
+
+
+# DEMONSTRATION
+# ----
+cargo.demo.hostname=<DEMO_HOST>
+cargo.demo.port=<DEMO_PORT>
+cargo.demo.username=<DEMO_USERNAME>
+cargo.demo.password=<DEMO_PASSWORD>
+
+
+# PRODUCTION
+# ----
+cargo.prod.hostname=<PROD_HOST>
+cargo.prod.port=<PROD_PORT>
+cargo.prod.username=<PROD_USERNAME>
+cargo.prod.password=<PROD_PASSWORD>
+

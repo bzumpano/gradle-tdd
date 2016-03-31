@@ -1,0 +1,39 @@
+# DEVELOPMENT
+# ----
+# (in-file)
+flyway.dev.url=jdbc:postgresql://<DEV_HOST>:5432/<DEV_DB_NAME>
+flyway.dev.locations=db/postgres/migration
+flyway.dev.user=<DEV_USERNAME>
+flyway.dev.password=<DEV_PASSWORD>
+flyway.dev.driver=org.postgresql.Driver
+
+
+# TEST
+# ----
+# (in-memory)
+flyway.test.url=jdbc:h2:mem:caiena-survey-web-test;DB_CLOSE_DELAY=-1;
+flyway.test.locations=db/h2/migration,db/h2/test
+flyway.test.user=sa
+flyway.test.password=
+flyway.test.driver=org.h2.Driver
+
+
+# DEMONSTRATION
+# ----
+# (in-file)
+flyway.demo.url=jdbc:postgresql://<DEMO_HOST>:<PORT>/<DEMO_DB_NAME>
+flyway.demo.locations=db/postgres/migration
+flyway.demo.user=<DEMO_USERNAME>
+flyway.demo.password=<DEMO_PASSWORD>
+flyway.demo.driver=org.postgresql.Driver
+
+
+# PRODUCTION
+# ----
+# (in-file)
+flyway.prod.url=jdbc:postgresql://<PROD_HOST>:<PORT>/<PROD_DB_NAME>
+flyway.prod.locations=db/h2/migration
+flyway.prod.user=<PROD_USERNAME>
+flyway.prod.password=<PROD_PASSWORD>
+flyway.prod.driver=org.h2.Driver
+
