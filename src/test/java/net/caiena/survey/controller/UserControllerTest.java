@@ -28,13 +28,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author bzumpano
@@ -124,7 +120,7 @@ public class UserControllerTest {
     @Test
     public void successCreate() throws Exception {
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users").
+        final MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users").
                 with(SecurityMockMvcRequestPostProcessors.csrf()).
                 param("username", "newUser").
                 param("password", "newPassword").
@@ -132,7 +128,7 @@ public class UserControllerTest {
                 andExpect(MockMvcResultMatchers.status().isFound()).
                 andReturn();
 
-        String url = result.getResponse().getRedirectedUrl();
+        final String url = result.getResponse().getRedirectedUrl();
         Assert.assertTrue(url.matches("users/([0-9]+)"));
     }
 
