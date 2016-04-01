@@ -1,5 +1,10 @@
 package net.caiena.survey;
 
+import net.caiena.survey.entity.User;
+import net.caiena.survey.entity.builder.UserBuilder;
+import net.caiena.survey.enumeration.Role;
+import net.caiena.survey.service.UserService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +51,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
  * @see <a href="https://github.com/spring-projects/spring-security/blob/master/test/src/test/java/org/springframework/security/test/web/servlet/response/SecurityMockMvcResultMatchersTests.java"></a>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration({MultiHttpSecurityConfig.class, MultiHttpSecurityConfigTest.Config.class})
+@SpringApplicationConfiguration(ApplicationTests.class)
 @WebAppConfiguration
 @TestExecutionListeners(listeners={ServletTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
@@ -55,20 +60,31 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
         WithSecurityContextTestExecutionListener.class})
 public class MultiHttpSecurityConfigTest {
 
-    private static final String USER_NAME = "user";
-    private static final String USER_PWD = "password";
-
     @Autowired
     private WebApplicationContext context;
 
     protected MockMvc mockMvc;
+
+    @Autowired
+    private UserService userService;
+
+    private User user;
 
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).
                 apply(springSecurity()).
                 build();
+
+        user = new UserBuilder().role(Role.ADMIN).build();
+        user = userService.save(user);
     }
+
+    @After
+    public void destroy() {
+        userService.delete(user.getId());
+    }
+
 
     @Test
     public void authenticationFailedFormLoginBadCredentials() throws Exception {
@@ -88,37 +104,32 @@ public class MultiHttpSecurityConfigTest {
 
     @Test
     public void authenticationSuccessFormLogin() throws Exception {
-        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user(USER_NAME).password(USER_PWD)).
+        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin().user(user.getUsername()).password(user.getPassword())).
                 andExpect(MockMvcResultMatchers.status().isFound()).
                 andExpect(MockMvcResultMatchers.redirectedUrl("/")).
-                andExpect(SecurityMockMvcResultMatchers.authenticated().withUsername(USER_NAME));
+                andExpect(SecurityMockMvcResultMatchers.authenticated().withUsername(user.getUsername()));
     }
 
     @Test
-    public void authenticationFailureHttpBasic() throws Exception {
+    public void authenticationFailureHttpDigest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/notfound").
-                with(SecurityMockMvcRequestPostProcessors.httpBasic("notfound", "invalid"))).
+                with(SecurityMockMvcRequestPostProcessors.
+                        digest("invalidUser").
+                        password("invalidPassword").
+                        realm("invalidRealm"))).
                 andExpect(SecurityMockMvcResultMatchers.unauthenticated());
     }
 
     @Test
-    public void authenticationSuccessHttpBasic() throws Exception {
+    public void authenticationSuccessHttpDigest() throws Exception {
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/notfound").
-                with(SecurityMockMvcRequestPostProcessors.httpBasic(USER_NAME, USER_PWD))).
+                with(SecurityMockMvcRequestPostProcessors.
+                        digest(user.getUsername()).
+                                    password(user.getPassword()).
+                                    realm("Digest Realm"))).
+                andDo(MockMvcResultHandlers.print()).
                 andExpect(MockMvcResultMatchers.status().isNotFound());
-    }
-
-    @EnableWebSecurity
-    @EnableWebMvc
-    @Order(Ordered.LOWEST_PRECEDENCE)
-    static class Config extends WebSecurityConfigurerAdapter {
-
-        @Autowired
-        public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
-            auth.
-                    inMemoryAuthentication().
-                    withUser(USER_NAME).roles("ADMIN").password(USER_PWD);
-        }
     }
 
     @Controller

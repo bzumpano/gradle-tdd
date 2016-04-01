@@ -2,10 +2,12 @@ package net.caiena.survey.controller;
 
 import net.caiena.survey.ApplicationTests;
 import net.caiena.survey.entity.User;
+import net.caiena.survey.entity.builder.UserBuilder;
 import net.caiena.survey.enumeration.Role;
 import net.caiena.survey.exception.ResourceNotFoundException;
 import net.caiena.survey.service.UserService;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +28,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author bzumpano
@@ -48,28 +54,32 @@ public class UserControllerTest {
     private static final String ATTR_USER = "user";
 
     @Autowired
-    private UserService userService;
-
-    private User user;
-
-    @Autowired
     private WebApplicationContext context;
 
     protected MockMvc mockMvc;
+
+    @Autowired
+    private UserService userService;
+
+    private User user;
 
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).
                 apply(SecurityMockMvcConfigurers.springSecurity()).
                 build();
+
+        user = new UserBuilder().role(Role.ADMIN).build();
+        user = userService.save(user);
     }
 
-    @Before
-    public void createUser() {
-        user = new User();
-        user.setUsername("user");
-        user.setPassword("password");
-        user.setRole(Role.USER);
+    @After
+    public void destroy() {
+
+        if (user != null) {
+            userService.delete(user.getId());
+        }
+
     }
 
     @Test
@@ -82,8 +92,6 @@ public class UserControllerTest {
 
     @Test
     public void successShow() throws Exception {
-
-        userService.save(user);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", user.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk()).
@@ -116,19 +124,20 @@ public class UserControllerTest {
     @Test
     public void successCreate() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users").
-                        with(SecurityMockMvcRequestPostProcessors.csrf()).
-                        param("username", "user").
-                        param("password", "password").
-                        param("role", Role.USER.name())).
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users").
+                with(SecurityMockMvcRequestPostProcessors.csrf()).
+                param("username", "newUser").
+                param("password", "newPassword").
+                param("role", Role.USER.name())).
                 andExpect(MockMvcResultMatchers.status().isFound()).
-                andExpect(MockMvcResultMatchers.redirectedUrlPattern("users/*"));
+                andReturn();
+
+        String url = result.getResponse().getRedirectedUrl();
+        Assert.assertTrue(url.matches("users/([0-9]+)"));
     }
 
     @Test
     public void successEdit() throws Exception {
-
-        userService.save(user);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}/edit", user.getId())).
                 andExpect(MockMvcResultMatchers.status().isOk()).
@@ -140,8 +149,6 @@ public class UserControllerTest {
     public void successUpdate() throws Exception {
 
         final String newPassword = "newPassword";
-
-        userService.save(user);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/users/{id}", user.getId()).
                         with(SecurityMockMvcRequestPostProcessors.csrf()).
@@ -158,14 +165,13 @@ public class UserControllerTest {
     @Test
     public void successDestroy() throws Exception {
 
-        userService.save(user);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/users/{id}", user.getId()).
                 with(SecurityMockMvcRequestPostProcessors.csrf())).
                 andExpect(MockMvcResultMatchers.status().isFound()).
                 andExpect(MockMvcResultMatchers.redirectedUrl("/users"));
 
-        Assert.assertNull(userService.find(user.getId()));
+        user = userService.find(user.getId());
+        Assert.assertNull(user);
 
     }
 

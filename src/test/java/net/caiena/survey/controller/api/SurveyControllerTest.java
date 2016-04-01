@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.caiena.survey.ApplicationTests;
 import net.caiena.survey.entity.Survey;
 import net.caiena.survey.entity.User;
+import net.caiena.survey.entity.builder.UserBuilder;
 import net.caiena.survey.enumeration.Role;
 import net.caiena.survey.service.SurveyService;
 import net.caiena.survey.service.UserService;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,15 +71,25 @@ public class SurveyControllerTest {
                 apply(SecurityMockMvcConfigurers.springSecurity()).
                 build();
 
-        createUser();
+        user = new UserBuilder().role(Role.ADMIN).build();
+        user = userService.save(user);
+
         createSurvey();
+    }
+
+    @After
+    public void destroy() {
+        userService.delete(user.getId());
     }
 
     @Test
     public void successList() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/surveys")
-                .with(SecurityMockMvcRequestPostProcessors.httpBasic(user.getUsername(), user.getPassword())))
+                .with(SecurityMockMvcRequestPostProcessors.
+                        digest(user.getUsername()).
+                        password(user.getPassword()).
+                        realm("Digest Realm")))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.isA(List.class)));
@@ -88,7 +100,10 @@ public class SurveyControllerTest {
     public void successShow() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/surveys/{id}", survey.getId())
-                .with(SecurityMockMvcRequestPostProcessors.httpBasic(user.getUsername(), user.getPassword())))
+                .with(SecurityMockMvcRequestPostProcessors.
+                        digest(user.getUsername()).
+                        password(user.getPassword()).
+                        realm("Digest Realm")))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(survey.getId().intValue())))
@@ -98,12 +113,6 @@ public class SurveyControllerTest {
 
     @Test
     public void successUpdate() throws Exception {
-
-        final User user = new User();
-        user.setUsername("user");
-        user.setPassword("password");
-        user.setRole(Role.ADMIN);
-        userService.save(user);
 
         final String oldDescription = survey.getDescription();
         survey.setDescription("New description");
@@ -125,15 +134,6 @@ public class SurveyControllerTest {
         final ObjectMapper mapper = new ObjectMapper();
 
         return mapper.writeValueAsString(survey);
-    }
-
-    private void createUser() {
-        user = new User();
-        user.setUsername("user");
-        user.setPassword("password");
-        user.setRole(Role.ADMIN);
-
-        userService.save(user);
     }
 
     private void createSurvey() {
