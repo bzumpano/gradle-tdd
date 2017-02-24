@@ -2,7 +2,7 @@ buildscript {
     ext {
         springBootVersion = '1.5.1.RELEASE'
         flywayVersion = '4.1.1'
-        assetPipelineVersion = '2.7.2'
+        assetPipelineVersion = '2.10.1'
         fingerprintVersion = '0.3'
         cargoVersion = '2.2.2'
     }
@@ -31,8 +31,8 @@ apply plugin: 'com.bertramlabs.asset-pipeline'
 apply plugin: 'com.bmuschko.cargo'
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 
 repositories {
@@ -42,11 +42,6 @@ repositories {
 
 configurations {
     providedRuntime
-}
-
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.4'
 }
 
 
@@ -168,7 +163,7 @@ flywayValidate.dependsOn(flywayLog)
 
 
 assets {
-// @see http://bertramdev.github.io/asset-pipeline/asset/pipeline/AssetCompiler.html#options
+    // @see http://bertramdev.github.io/asset-pipeline/asset/pipeline/AssetCompiler.html#options
     enableGzip = false
     enableDigests = false
     enableSourceMaps = false
@@ -200,17 +195,17 @@ cargoRedeployRemote.dependsOn war
 
 dependencies {
 
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-security')
-    compile("org.springframework.boot:spring-boot-devtools")
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.flywaydb:flyway-core')
 
     // asset-pipeline
     compile("org.codehaus.groovy:groovy")
     compile("com.bertramlabs.plugins:asset-pipeline-spring-boot:${assetPipelineVersion}")
 
+    runtime("org.springframework.boot:spring-boot-devtools")
     runtime('com.h2database:h2')
 
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
