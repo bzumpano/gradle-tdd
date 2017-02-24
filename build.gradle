@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '1.3.3.RELEASE'
-        flywayVersion = '3.2.1'
+        springBootVersion = '1.5.1.RELEASE'
+        flywayVersion = '4.1.1'
         assetPipelineVersion = '2.7.2'
         fingerprintVersion = '0.3'
         cargoVersion = '2.2.2'
@@ -24,7 +24,7 @@ apply plugin: 'java'
 apply plugin: 'pmd'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
 apply plugin: 'org.flywaydb.flyway'
 apply plugin: 'com.bertramlabs.asset-pipeline'
@@ -46,7 +46,7 @@ configurations {
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
+    gradleVersion = '3.4'
 }
 
 
@@ -165,7 +165,6 @@ flywayInfo.dependsOn(flywayLog)
 flywayRepair.dependsOn(flywayLog)
 flywayClean.dependsOn(flywayLog)
 flywayValidate.dependsOn(flywayLog)
-flywayInit.dependsOn(flywayLog)
 
 
 assets {
@@ -201,9 +200,9 @@ cargoRedeployRemote.dependsOn war
 
 dependencies {
 
+    compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile("org.springframework.boot:spring-boot-devtools")
     compile('org.flywaydb:flyway-core')
